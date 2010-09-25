@@ -20,6 +20,10 @@ return array(
             'env' => APPLICATION_ENV
         ),
         'modules' => array(),
-        'view' => array()
+        'view' => array(),
+        'layout' => array(
+            'layoutPath' => APPLICATION_ROOT . '/layouts',
+            'layout' => 'default'
+        )
     )
 );

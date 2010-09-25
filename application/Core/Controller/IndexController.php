@@ -1,6 +1,6 @@
 <?php
 /**
- * Epixa - Example Application
+ * Epixa - Forum
  */
 
 namespace Core\Controller;

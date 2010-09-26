@@ -28,7 +28,7 @@ class AuthController extends \Epixa\Controller\AbstractController
     {
         $request = $this->getRequest();
 
-        $form = LoginForm();
+        $form = new LoginForm();
         $this->view->form = $form;
 
         if (!$request->isPost() || $form->isValid($request->getPost())) {

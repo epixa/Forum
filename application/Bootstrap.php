@@ -1,9 +1,10 @@
 <?php
 /**
- * Epixa - Example Application
+ * Epixa - Forum
  */
 
-use Epixa\Application\Bootstrap as BaseBootstrap;
+use Epixa\Application\Bootstrap as BaseBootstrap,
+    Epixa\Service\AbstractDoctrineService as DoctrineService;
 
 /**
  * Bootstrap the application
@@ -14,4 +15,13 @@ use Epixa\Application\Bootstrap as BaseBootstrap;
  * @author    Court Ewing (court@epixa.com)
  */
 class Bootstrap extends BaseBootstrap
-{}
+{
+    /**
+     * Set the default entity manager for doctrine services
+     */
+    public function _initDoctrineService()
+    {
+        $em = $this->bootstrap('doctrine')->getResource('doctrine');
+        DoctrineService::setDefaultEntityManager($em);
+    }
+}

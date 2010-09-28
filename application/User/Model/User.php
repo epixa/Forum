@@ -38,11 +38,6 @@ class User extends AbstractModel
     protected $alias;
 
     /**
-     * @OneToOne(targetEntity="User\Model\Auth", mappedBy="user")
-     */
-    protected $auth;
-
-    /**
      * @OneToOne(targetEntity="User\Model\Profile", mappedBy="user")
      */
     protected $profile;
@@ -67,19 +62,6 @@ class User extends AbstractModel
     public function setAlias($alias)
     {
         $this->alias = (string)$alias;
-        
-        return $this;
-    }
-
-    /**
-     * Set the user's auth
-     * 
-     * @param  Auth $auth
-     * @return User *Fluent interface*
-     */
-    public function setAuth(Auth $auth)
-    {
-        $this->auth = $auth;
         
         return $this;
     }

@@ -6,7 +6,7 @@
 namespace User\Service;
 
 use Epixa\Service\AbstractDoctrineService,
-    User\Model\User,
+    User\Model\Session,
     Epixa\Exception\NotFoundException,
     InvalidArgumentException;
 
@@ -24,7 +24,7 @@ class User extends AbstractDoctrineService
      * Attempt to login with the given credentials
      * 
      * @param  array $credentials
-     * @return User
+     * @return Session
      * @throws InvalidArgumentException If insufficent crendetials are provided
      * @throws NotFoundException If no user is found with those credentials
      */
@@ -36,5 +36,14 @@ class User extends AbstractDoctrineService
                 'A username and password are required for login'
             );
         }
+
+        $em   = $this->getEntityManager();
+        $repo = $em->getRepository('User\Model\Auth');
+        
+        $qb = $repo->getQueryBuilder('u');
+
+        $repo->includeUser($qb);
+        $repo->restrictToLoginId($qb, $credentials['username']);
+        $repo->restrictToPassword($qb, $credentials['password']);
     }
 }

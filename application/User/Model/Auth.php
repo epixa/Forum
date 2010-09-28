@@ -5,7 +5,9 @@
 
 namespace User\Model;
 
-use Epixa\Model\AbstractModel;
+use Epixa\Model\AbstractModel,
+    Epixa\Phpass,
+    Epixa\Exception\ConfigException;
 
 /**
  * @category   Module
@@ -17,13 +19,23 @@ use Epixa\Model\AbstractModel;
  *
  * @Entity(table="user_auth")
  *
- * @property integer          $id
- * @property User\Model\User  $user
- * @property string           $loginid
- * @property string           $passhash
+ * @property integer         $id
+ * @property User\Model\User $user
+ * @property string          $loginid
+ * @property string          $passhash
  */
 class Auth extends AbstractModel
 {
+    /**
+     * @var null|Phpass
+     */
+    protected static $defaultPhpass = null;
+
+    /**
+     * @var null|Phpass
+     */
+    protected $phpass = null;
+
     /**
      * @Id
      * @Column(type="integer", name="id")
@@ -32,7 +44,7 @@ class Auth extends AbstractModel
     protected $id;
 
     /**
-     * @OneToOne(targetEntity="User\Model\User", inversedBy="auth")
+     * @OneToOne(targetEntity="User\Model\User")
      */
     protected $user;
 
@@ -46,6 +58,31 @@ class Auth extends AbstractModel
      */
     protected $passHash = null;
 
+
+    /**
+     * Get the default phpass object
+     *
+     * @return Phpass
+     * @throws ConfigException If no default phpass is configured
+     */
+    public static function getDefaultPhpass()
+    {
+        if (self::$defaultPhpass === null) {
+            throw new ConfigException('No default phpass configured');
+        }
+        
+        return self::$defaultPhpass;
+    }
+
+    /**
+     * Set the default phpass object
+     * 
+     * @param Phpass $phpass
+     */
+    public static function setDefaultPhpass(Phpass $phpass)
+    {
+        self::$defaultPhpass = $phpass;
+    }
 
     /**
      * Throws exception so id cannot be set directly
@@ -92,6 +129,44 @@ class Auth extends AbstractModel
     public function setPassHash($passhash)
     {
         $this->passHash = (string)$passhash;
+
+        return $this;
+    }
+
+    /**
+     * Hash the given password
+     *
+     * @param  string $password
+     * @return string
+     */
+    public function hashPassword($password)
+    {
+        return $this->getPhpass()->hashPassword($password);
+    }
+
+    /**
+     * Get the phpass object
+     * 
+     * @return Phpass
+     */
+    public function getPhpass()
+    {
+        if ($this->phpass === null) {
+            $this->setPhpass(self::getDefaultPhpass());
+        }
+
+        return $this->phpass;
+    }
+
+    /**
+     * Set the phpass object
+     * 
+     * @param  Phpass $phpass
+     * @return Auth *Fluent interface*
+     */
+    public function setPhpass(Phpass $phpass)
+    {
+        $this->phpass = $phpass;
 
         return $this;
     }

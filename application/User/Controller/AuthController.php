@@ -37,14 +37,14 @@ class AuthController extends \Epixa\Controller\AbstractController
 
         try {
             $service = new UserService();
-            $user = $service->login($form->getValues());
+            $session = $service->login($form->getValues());
         } catch (NotFoundException $e) {
             $msg = 'Could not find a user with those credentials';
             $form->setErrorMessage($msg);
             return;
         }
 
-        Zend_Auth::getInstance()->getStorage()->write($user);
+        Zend_Auth::getInstance()->getStorage()->write($session);
 
         $this->_helper->redirector->gotoUrlAndExit('/');
     }

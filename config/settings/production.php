@@ -8,16 +8,28 @@ return array(
             'timezone' => 'America/New_York'
         )
     ),
-    'db' => array(
-        'dbname' => 'epixaforumdb'
-    ),
     'bootstrap' => array(
-        'path' => sprintf('%s/Bootstrap.php', APPLICATION_PATH)
+        'path' => APPLICATION_PATH . '/Bootstrap.php'
+    ),
+    'autoloadernamespaces' => array(
+        'Doctrine\\'
     ),
     'resources' => array(
         'frontController' => array(
             'moduleDirectory' => APPLICATION_PATH,
             'env' => APPLICATION_ENV
+        ),
+        'doctrine' => array(
+            'proxy' => array(
+                'directory' => APPLICATION_ROOT . '/data/proxies'
+            ),
+            'connection'   => array(
+                'driver'   => 'pdo_mysql',
+                'host'     => 'localhost',
+                'dbname'   => 'epixaforumdb',
+                'user'     => 'productionusr',
+                'password' => 'productionpass'
+            )
         ),
         'modules' => array(),
         'view' => array(),

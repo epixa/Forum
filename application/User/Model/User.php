@@ -18,9 +18,7 @@ use Epixa\Model\AbstractModel;
  * @Entity(table="user")
  *
  * @property integer            $id
- * @property string             $email
  * @property string             $alias
- * @property User\Model\Auth    $auth
  * @property User\Model\Profile $profile
  */
 class User extends AbstractModel

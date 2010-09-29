@@ -5,7 +5,8 @@
 
 namespace User\Controller;
 
-use User\Form\Login as LoginForm,
+use Epixa\Controller\AbstractController,
+    User\Form\Login as LoginForm,
     User\Service\User as UserService,
     Epixa\Exception\NotFoundException,
     Zend_Auth as Authenticator;
@@ -20,7 +21,7 @@ use User\Form\Login as LoginForm,
  * @license    http://github.com/epixa/Forum/blob/master/LICENSE New BSD
  * @author     Court Ewing (court@epixa.com)
  */
-class AuthController extends \Epixa\Controller\AbstractController
+class AuthController extends AbstractController
 {
     /**
      * Log in a user

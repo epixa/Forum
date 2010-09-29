@@ -7,7 +7,8 @@ namespace User\Controller;
 
 use User\Form\Login as LoginForm,
     User\Service\User as UserService,
-    Epixa\Exception\NotFoundException;
+    Epixa\Exception\NotFoundException,
+    Zend_Auth as Authenticator;
 
 /**
  * User authentication controller
@@ -31,7 +32,7 @@ class AuthController extends \Epixa\Controller\AbstractController
         $form = new LoginForm();
         $this->view->form = $form;
 
-        if (!$request->isPost() || $form->isValid($request->getPost())) {
+        if (!$request->isPost() || !$form->isValid($request->getPost())) {
             return;
         }
 
@@ -39,12 +40,11 @@ class AuthController extends \Epixa\Controller\AbstractController
             $service = new UserService();
             $session = $service->login($form->getValues());
         } catch (NotFoundException $e) {
-            $msg = 'Could not find a user with those credentials';
-            $form->setErrorMessage($msg);
+            $form->addError('Could not find a user with those credentials');
             return;
         }
 
-        Zend_Auth::getInstance()->getStorage()->write($session);
+        Authenticator::getInstance()->getStorage()->write($session);
 
         $this->_helper->redirector->gotoUrlAndExit('/');
     }
@@ -54,7 +54,7 @@ class AuthController extends \Epixa\Controller\AbstractController
      */
     public function logoutAction()
     {
-        Zend_Auth::getInstance()->clearIdentity();
+        Authenticator::getInstance()->clearIdentity();
 
         $this->_helper->redirector->gotoUrlAndExit('/');
     }

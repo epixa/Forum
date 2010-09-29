@@ -17,12 +17,13 @@ use Epixa\Model\AbstractModel,
  * @license    http://github.com/epixa/Epixa/blob/master/LICENSE New BSD
  * @author     Court Ewing (court@epixa.com)
  *
- * @Entity(table="user_auth")
+ * @Entity(repositoryClass="User\Repository\Auth")
+ * @Table(name="user_auth")
  *
  * @property integer         $id
  * @property User\Model\User $user
- * @property string          $loginid
- * @property string          $passhash
+ * @property string          $loginId
+ * @property string          $passHash
  */
 class Auth extends AbstractModel
 {
@@ -142,6 +143,17 @@ class Auth extends AbstractModel
     public function hashPassword($password)
     {
         return $this->getPhpass()->hashPassword($password);
+    }
+
+    /**
+     * Is the given password the same as the stored password?
+     * 
+     * @param  string $password
+     * @return boolean
+     */
+    public function comparePassword($password)
+    {
+        return $this->getPhpass()->checkPassword($password, $this->passHash);
     }
 
     /**

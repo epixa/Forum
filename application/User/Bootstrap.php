@@ -7,6 +7,7 @@ namespace User;
 
 use Epixa\Application\Module\Bootstrap as ModuleBootstrap,
     User\Model\Auth,
+    Epixa\Auth\Storage\Doctrine as DoctrineStorage,
     Epixa\Phpass;
 
 /**
@@ -20,6 +21,14 @@ use Epixa\Application\Module\Bootstrap as ModuleBootstrap,
  */
 class Bootstrap extends ModuleBootstrap
 {
+    public function _initAuthStorage()
+    {
+        $em = \Epixa\Service\AbstractDoctrineService::getDefaultEntityManager();
+
+        $storage = new DoctrineStorage($em, 'User\Model\Session');
+        \Zend_Auth::getInstance()->setStorage($storage);
+    }
+
     /**
      * Set up the default phpass object to be used in authentication models
      */

@@ -27,7 +27,8 @@ class Auth extends EntityRepository
      */
     public function includeUser(QueryBuilder $qb)
     {
-        $qb->innerJoin('a.user', 'u');
+        $qb->innerJoin('ua.user', 'u')
+           ->addSelect('u');
     }
 
     /**
@@ -38,21 +39,7 @@ class Auth extends EntityRepository
      */
     public function restrictToLoginId(QueryBuilder $qb, $loginId)
     {
-        $qb->andWhere('a.loginid = :loginid')
+        $qb->andWhere('ua.loginId = :loginid')
            ->setParameter('loginid', $loginId);
-    }
-
-    /**
-     * Restrict the given query to results that match a specific password
-     * 
-     * @param QueryBuilder $qb
-     * @param integer      $password
-     */
-    public function restrictToPassword(QueryBuilder $qb, $password)
-    {
-        $model = new AuthModel();
-        
-        $qb->andWhere('a.passhash = :passhash')
-           ->setParameter('passhash', $model->hashPassword($password));
     }
 }

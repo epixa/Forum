@@ -6,8 +6,10 @@
 namespace User\Model;
 
 use Epixa\Model\AbstractModel,
+    Epixa\Auth\Storage\SessionEntity,
     DateTime,
-    InvalidArgumentException;
+    InvalidArgumentException,
+    LogicException;
 
 /**
  * @category   Module
@@ -17,14 +19,15 @@ use Epixa\Model\AbstractModel,
  * @license    http://github.com/epixa/Epixa/blob/master/LICENSE New BSD
  * @author     Court Ewing (court@epixa.com)
  *
- * @Entity(table="user_session")
+ * @Entity
+ * @Table(name="user_session")
  *
  * @property integer         $id
  * @property User\Model\User $user
  * @property string          $key
  * @property DateTime        $lastActivity
  */
-class Session extends AbstractModel
+class Session extends AbstractModel implements SessionEntity
 {
     /**
      * @Id
@@ -39,15 +42,29 @@ class Session extends AbstractModel
     protected $user;
 
     /**
-     * @Column(type="string", name="key", unique=true)
+     * @Column(type="string", name="session_key", unique=true)
      */
     protected $key;
 
     /**
-     * @Column(type="date", name="last_activity")
+     * @Column(type="datetime", name="last_activity")
      */
     protected $lastActivity;
 
+
+    /**
+     * Constructor
+     *
+     * Set the date of last activity,
+     *
+     * @param User $user
+     */
+    public function __construct(User $user)
+    {
+        $this->updateLastActivity()
+             ->setUser($user)
+             ->setKey($this->_generateKey($user));
+    }
 
     /**
      * Throws exception so id cannot be set directly
@@ -56,11 +73,11 @@ class Session extends AbstractModel
      */
     public function setId($id)
     {
-        throw new \LogicException('Cannot set id directly');
+        throw new LogicException('Cannot set id directly');
     }
 
     /**
-     * Set the user
+     * Set the user associated with this session
      *
      * @param  User $user
      * @return Session *Fluent interface*
@@ -70,6 +87,16 @@ class Session extends AbstractModel
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * Get the user associated with this session
+     *
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 
     /**
@@ -83,6 +110,16 @@ class Session extends AbstractModel
         $this->key = (string)$key;
 
         return $this;
+    }
+
+    /**
+     * Get the session key
+     * 
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
     }
 
     /**
@@ -107,5 +144,28 @@ class Session extends AbstractModel
         $this->lastActivity = $date;
 
         return $this;
+    }
+
+    /**
+     * Set the date of last activity to right now
+     *
+     * @return Session *Fluent interface*
+     */
+    public function updateLastActivity()
+    {
+        $this->setLastActivity('now');
+
+        return $this;
+    }
+
+    /**
+     * Generate a new session key
+     * 
+     * @param  User $user
+     * @return string
+     */
+    protected function _generateKey(User $user)
+    {
+        return sha1(serialize($user));
     }
 }

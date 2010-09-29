@@ -15,7 +15,8 @@ use Epixa\Model\AbstractModel;
  * @license    http://github.com/epixa/Epixa/blob/master/LICENSE New BSD
  * @author     Court Ewing (court@epixa.com)
  *
- * @Entity(table="user_profile")
+ * @Entity
+ * @Table(name="user_profile")
  *
  * @property integer         $id
  * @property User\Model\User $user

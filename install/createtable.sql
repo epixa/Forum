@@ -32,10 +32,10 @@ drop table if exists user_session;
 create table user_session (
     id int not null auto_increment,
     user_id int not null,
-    `key` varchar(255) not null,
+    session_key varchar(255) not null,
     last_activity datetime not null,
     primary key(id),
-    unique key(`key`),
+    unique key(session_key),
     constraint session_has_user foreign key(user_id) references `user`(id) on delete cascade
 ) engine=innodb;
 

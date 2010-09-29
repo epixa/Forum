@@ -28,5 +28,10 @@ class Login extends BaseForm
             'required' => true,
             'label' => 'Password'
         ));
+
+        $this->addElement('submit', 'submit', array(
+            'ignore' => true,
+            'label' => 'Login'
+        ));
     }
 }

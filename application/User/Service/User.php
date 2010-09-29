@@ -8,7 +8,8 @@ namespace User\Service;
 use Epixa\Service\AbstractDoctrineService,
     User\Model\Session,
     Epixa\Exception\NotFoundException,
-    InvalidArgumentException;
+    InvalidArgumentException,
+    Doctrine\ORM\NoResultException;
 
 /**
  * @category   Module
@@ -39,11 +40,22 @@ class User extends AbstractDoctrineService
 
         $em   = $this->getEntityManager();
         $repo = $em->getRepository('User\Model\Auth');
-        
-        $qb = $repo->getQueryBuilder('u');
 
+        $qb = $repo->createQueryBuilder('ua');
+        
         $repo->includeUser($qb);
         $repo->restrictToLoginId($qb, $credentials['username']);
-        $repo->restrictToPassword($qb, $credentials['password']);
+
+        try {
+            $auth = $qb->getQuery()->getSingleResult();
+            if (!$auth->comparePassword($credentials['password'])) {
+                // TODO: Failed login attempts
+                throw new NoResultException('Password does not match');
+            }
+        } catch (NoResultException $e) {
+            throw new NotFoundException('Invalid credentials', null, $e);
+        }
+
+        return new Session($auth->user);
     }
 }

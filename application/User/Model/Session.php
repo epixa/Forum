@@ -166,6 +166,6 @@ class Session extends AbstractModel implements SessionEntity
      */
     protected function _generateKey(User $user)
     {
-        return sha1(serialize($user));
+        return sha1(serialize($user) . microtime());
     }
 }

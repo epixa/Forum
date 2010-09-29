@@ -26,7 +26,7 @@ class Bootstrap extends ModuleBootstrap
         $em = \Epixa\Service\AbstractDoctrineService::getDefaultEntityManager();
 
         $storage = new DoctrineStorage($em, 'User\Model\Session');
-        \Zend_Auth::getInstance()->setStorage($storage);
+        \Zend_Auth::getInstance()->setStorage($storage)->getIdentity();
     }
 
     /**

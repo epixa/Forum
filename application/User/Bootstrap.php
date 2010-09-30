@@ -6,7 +6,8 @@
 namespace User;
 
 use Epixa\Application\Module\Bootstrap as ModuleBootstrap,
-    User\Model\Auth,
+    User\Model\Auth as AuthModel,
+    Zend_Auth as Authenticator,
     Epixa\Auth\Storage\Doctrine as DoctrineStorage,
     Epixa\Phpass;
 
@@ -21,12 +22,16 @@ use Epixa\Application\Module\Bootstrap as ModuleBootstrap,
  */
 class Bootstrap extends ModuleBootstrap
 {
+    /**
+     * Initialize the doctrine auth identity storage
+     */
     public function _initAuthStorage()
     {
-        $em = \Epixa\Service\AbstractDoctrineService::getDefaultEntityManager();
+        $bootstrap = $this->getApplication()->bootstrap('doctrine');
+        $em = $bootstrap->getResource('doctrine');
 
         $storage = new DoctrineStorage($em, 'User\Model\Session');
-        \Zend_Auth::getInstance()->setStorage($storage)->getIdentity();
+        Authenticator::getInstance()->setStorage($storage)->getIdentity();
     }
 
     /**
@@ -40,6 +45,6 @@ class Bootstrap extends ModuleBootstrap
                     ? $options['phpassIterations']
                     : 8;
         $phpass = new Phpass($iterations);
-        Auth::setDefaultPhpass($phpass);
+        AuthModel::setDefaultPhpass($phpass);
     }
 }

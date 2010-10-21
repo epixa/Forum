@@ -5,6 +5,8 @@
 
 namespace Core\Controller;
 
+use Epixa\Acl\AclManager;
+
 /**
  * Default controller
  *

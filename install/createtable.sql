@@ -2,6 +2,17 @@
 -- Save the original check value so we can revert it
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 
+drop table if exists core_acl_rule;
+create table core_acl_rule (
+    id int not null auto_increment,
+    resource_id varchar(255) not null,
+    role_id varchar(255) not null,
+    privilege varchar(255),
+    `assertion` varchar(255),
+    primary key(id),
+    unique key(resource_id, role_id)
+) engine=innodb;
+
 drop table if exists `user`;
 create table `user` (
     id int not null auto_increment,

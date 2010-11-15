@@ -60,7 +60,7 @@ class User extends AbstractModel implements RoleInterface, MultiRoles, ResourceI
 
     /**
      * Constructor
-     * 
+     *
      * Initialize the groups collection
      */
     public function __construct()
@@ -70,8 +70,8 @@ class User extends AbstractModel implements RoleInterface, MultiRoles, ResourceI
 
     /**
      * Throws exception so id cannot be set directly
-     * 
-     * @param integer $id 
+     *
+     * @param integer $id
      */
     public function setId($id)
     {
@@ -87,26 +87,26 @@ class User extends AbstractModel implements RoleInterface, MultiRoles, ResourceI
     public function setAlias($alias)
     {
         $this->alias = (string)$alias;
-        
+
         return $this;
     }
 
     /**
      * Set the user's profile
-     * 
+     *
      * @param  Profile $profile
      * @return User *Fluent interface*
      */
     public function setProfile(Profile $profile)
     {
         $this->profile = $profile;
-        
+
         return $this;
     }
 
     /**
      * Get the user's groups
-     * 
+     *
      * @return ArrayCollection
      */
     public function getGroups()
@@ -116,7 +116,7 @@ class User extends AbstractModel implements RoleInterface, MultiRoles, ResourceI
 
     /**
      * Set the user's groups
-     * 
+     *
      * @param  array $groups
      * @return User *Fluent interface*
      */
@@ -126,13 +126,13 @@ class User extends AbstractModel implements RoleInterface, MultiRoles, ResourceI
         foreach ($groups as $group) {
             $this->addGroup($group);
         }
-        
+
         return $this;
     }
 
     /**
      * Add a new user group
-     * 
+     *
      * @param  Group $group
      * @return User *Fluent interface*
      */
@@ -159,7 +159,7 @@ class User extends AbstractModel implements RoleInterface, MultiRoles, ResourceI
 
     /**
      * Get the user's roles
-     * 
+     *
      * @return array
      */
     public function getRoles()
@@ -176,7 +176,7 @@ class User extends AbstractModel implements RoleInterface, MultiRoles, ResourceI
 
     /**
      * Get the resource identifier for this model
-     * 
+     *
      * @return string
      */
     public function getResourceId()

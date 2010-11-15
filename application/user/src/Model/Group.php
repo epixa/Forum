@@ -85,7 +85,7 @@ class Group extends AbstractModel implements RoleInterface
 
     /**
      * Get the role id for this group
-     * 
+     *
      * @return string
      */
     public function getRoleId()

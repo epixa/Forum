@@ -23,7 +23,7 @@ class User extends AbstractDoctrineService
 {
     /**
      * Attempt to login with the given credentials
-     * 
+     *
      * @param  array $credentials
      * @return Session
      * @throws InvalidArgumentException If insufficent crendetials are provided
@@ -42,7 +42,7 @@ class User extends AbstractDoctrineService
         $repo = $em->getRepository('User\Model\Auth');
 
         $qb = $repo->createQueryBuilder('ua');
-        
+
         $repo->includeUser($qb);
         $repo->restrictToLoginId($qb, $credentials['username']);
 

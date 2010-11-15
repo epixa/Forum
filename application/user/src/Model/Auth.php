@@ -71,13 +71,13 @@ class Auth extends AbstractModel
         if (self::$defaultPhpass === null) {
             throw new ConfigException('No default phpass configured');
         }
-        
+
         return self::$defaultPhpass;
     }
 
     /**
      * Set the default phpass object
-     * 
+     *
      * @param Phpass $phpass
      */
     public static function setDefaultPhpass(Phpass $phpass)
@@ -147,7 +147,7 @@ class Auth extends AbstractModel
 
     /**
      * Is the given password the same as the stored password?
-     * 
+     *
      * @param  string $password
      * @return boolean
      */
@@ -158,7 +158,7 @@ class Auth extends AbstractModel
 
     /**
      * Get the phpass object
-     * 
+     *
      * @return Phpass
      */
     public function getPhpass()
@@ -172,7 +172,7 @@ class Auth extends AbstractModel
 
     /**
      * Set the phpass object
-     * 
+     *
      * @param  Phpass $phpass
      * @return Auth *Fluent interface*
      */

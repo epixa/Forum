@@ -22,7 +22,7 @@ class Auth extends EntityRepository
     /**
      * Include with the supplied query the means to retrieve the user details
      * along with the authentication details
-     * 
+     *
      * @param QueryBuilder $qb
      */
     public function includeUser(QueryBuilder $qb)
@@ -33,7 +33,7 @@ class Auth extends EntityRepository
 
     /**
      * Restrict the given query to results that match a specific loginid
-     * 
+     *
      * @param QueryBuilder $qb
      * @param integer      $loginId
      */

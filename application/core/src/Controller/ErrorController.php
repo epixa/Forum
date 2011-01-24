@@ -5,17 +5,19 @@
 
 namespace Core\Controller;
 
+use Epixa\Controller\AbstractController;
+
 /**
  * Error controller
  *
  * @category   Module
  * @package    Core
  * @subpackage Controller
- * @copyright  2010 epixa.com - Court Ewing
+ * @copyright  2011 epixa.com - Court Ewing
  * @license    http://github.com/epixa/Epixa/blob/master/LICENSE New BSD
  * @author     Court Ewing (court@epixa.com)
  */
-class ErrorController extends \Epixa\Controller\AbstractController
+class ErrorController extends AbstractController
 {
     /**
      * Handle all application level exceptions

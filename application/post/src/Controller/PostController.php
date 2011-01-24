@@ -3,31 +3,43 @@
  * Epixa - Forum
  */
 
-namespace User\Controller;
+namespace Post\Controller;
 
 use Epixa\Controller\AbstractController;
 
 /**
- * Controller for viewing and editing user profiles
+ * Manage post functionality
  *
  * @category   Module
- * @package    User
+ * @package    Post
  * @subpackage Controller
  * @copyright  2011 epixa.com - Court Ewing
  * @license    http://github.com/epixa/Forum/blob/master/LICENSE New BSD
  * @author     Court Ewing (court@epixa.com)
  */
-class ProfileController extends AbstractController
+class PostController extends AbstractController
 {
     /**
-     * View a specific user's profile
+     * View a specific post
      */
     public function viewAction()
     {}
-
+    
     /**
-     * Edit your user profile
+     * Create a new post
+     */
+    public function addAction()
+    {}
+    
+    /**
+     * Edit an existing post
      */
     public function editAction()
+    {}
+    
+    /**
+     * Delete an existing post
+     */
+    public function deleteAction()
     {}
 }

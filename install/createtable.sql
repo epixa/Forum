@@ -50,5 +50,11 @@ create table user_session (
     constraint session_has_user foreign key(user_id) references `user`(id) on delete cascade
 ) engine=innodb;
 
+drop table if exists post_topic;
+create table post_topic (
+    id int not null auto_increment,
+    primary key(id)
+) engine=innodb;
+
 -- Set the foreign key checks back to the original value
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

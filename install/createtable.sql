@@ -50,10 +50,20 @@ create table user_session (
     constraint session_has_user foreign key(user_id) references `user`(id) on delete cascade
 ) engine=innodb;
 
-drop table if exists post_topic;
-create table post_topic (
+drop table if exists post;
+create table post (
     id int not null auto_increment,
-    primary key(id)
+    discriminator varchar(255) not null,
+    title varchar(255) not null,
+    date_created datetime not null,
+    created_by_user_id int not null,
+    date_updated datetime,
+    updated_by_user_id int,
+    url varchar(255),
+    description varchar(1000),
+    primary key(id),
+    constraint post_created_by foreign key(created_by_user_id) references `user`(id) on delete restrict,
+    constraint post_updated_by foreign key(updated_by_user_id) references `user`(id) on delete restrict
 ) engine=innodb;
 
 -- Set the foreign key checks back to the original value

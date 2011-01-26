@@ -7,7 +7,8 @@ namespace Post\Model;
 
 use Epixa\Model\AbstractModel,
     User\Model\User,
-    DateTime;
+    DateTime,
+    LogicException;
 
 /**
  * @category   Module
@@ -17,24 +18,32 @@ use Epixa\Model\AbstractModel,
  * @license    http://github.com/epixa/Epixa/blob/master/LICENSE New BSD
  * @author     Court Ewing (court@epixa.com)
  *
- * @Entity
+ * @Entity(repositoryClass="Post\Repository\Post")
  * @Table(name="post")
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="discriminator", type="string")
  * @DiscriminatorMap({
- *   "standard" = "Post\Model\Post\Standard", 
+ *   "standard" = "Post\Model\Post", 
  *   "link"     = "Post\Model\Post\Link"
  * })
  *
- * @property integer  $id
+ * @property-read integer  $id
+ * @property-read string   $type
+ * @property-read DateTime $dateCreated
+ * 
  * @property string   $title
- * @property DateTime $dateCreated
+ * @property string   $description
  * @property User     $createdBy
  * @property DateTime $dateUpdated
  * @property User     $updatedBy
  */
-abstract class AbstractPost extends AbstractModel
+class Post extends AbstractModel
 {
+    /**
+     * @var string
+     */
+    protected $type = 'standard';
+    
     /**
      * @Id
      * @Column(name="id", type="integer")
@@ -50,6 +59,13 @@ abstract class AbstractPost extends AbstractModel
      * @var string
      */
     protected $title;
+    
+    /**
+     * @Column(name="description", type="string", nullable="true")
+     * 
+     * @var null|string
+     */
+    protected $description = null;
     
     /**
      * @Column(name="date_created", type="datetime")
@@ -92,9 +108,42 @@ abstract class AbstractPost extends AbstractModel
      */
     public function __construct($title, User $createdBy)
     {
+        $this->assertType();
+        
         $this->setTitle($title);
         $this->setCreatedBy($createdBy);
         $this->dateCreated = new DateTime('now');
+    }
+    
+    /**
+     * Invoked when object is unserialized
+     * 
+     * Assert that the object has a type specified
+     */
+    public function __wakeup()
+    {
+        $this->assertType();
+    }
+    
+    /**
+     * Assert that we have a type specified
+     */
+    public function assertType()
+    {
+        if (null === $this->type) {
+            throw new LogicException('No post type was specified');
+        }
+    }
+    
+    /**
+     * Throws exception so id cannot be set directly
+     *
+     * @param  integer $id
+     * @throws LogicException
+     */
+    public function setId($id)
+    {
+        throw new LogicException('Cannot set id directly');
     }
     
     /**
@@ -146,9 +195,10 @@ abstract class AbstractPost extends AbstractModel
     /**
      * Throws exception so creation date cannot be set directly
      * 
+     * @param  mixed $data
      * @throws LogicException
      */
-    public function setDateCreated()
+    public function setDateCreated($date)
     {
         throw new LogicException('Cannot set creation date directly');
     }
@@ -207,5 +257,16 @@ abstract class AbstractPost extends AbstractModel
     public function getDateUpdated()
     {
         return $this->dateUpdated;
+    }
+    
+    /**
+     * Throws exception so type cannot be set directly
+     *
+     * @param  integer $type
+     * @throws LogicException
+     */
+    public function setType($type)
+    {
+        throw new LogicException('Cannot set type directly');
     }
 }

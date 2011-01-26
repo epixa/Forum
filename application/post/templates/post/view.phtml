@@ -1,0 +1,8 @@
+<?php
+/* @var $post Post\Model\AbstractPost */
+$post = $this->post;
+?>
+
+<div id="post-<?php echo $post->id; ?>">
+    <h1><?php echo $this->postTitle($post); ?></h1>
+</div>

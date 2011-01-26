@@ -17,7 +17,10 @@ return array(
     'resources' => array(
         'frontController' => array(
             'moduleDirectory' => APPLICATION_PATH,
-            'env' => APPLICATION_ENV
+            'env' => APPLICATION_ENV,
+            'actionHelperPaths' => array(
+                'Epixa\\Controller\\Helper\\' => 'Epixa/Controller/Helper'
+            )
         ),
         'doctrine' => array(
             'proxy' => array(
@@ -32,6 +35,9 @@ return array(
             )
         ),
         'modules' => array(),
+        'router' => array(
+            'file' => APPLICATION_ROOT . '/config/routes.php'
+        ),
         'view' => array(),
         'layout' => array(
             'layoutPath' => APPLICATION_ROOT . '/layouts',

@@ -5,7 +5,7 @@
 
 namespace Post\Model\Post;
 
-use Post\Model\AbstractPost;
+use Post\Model\Post as BasePost;
 
 /**
  * @category   Module
@@ -19,8 +19,13 @@ use Post\Model\AbstractPost;
  *
  * @property string $url
  */
-class Link extends AbstractPost
+class Link extends BasePost
 {
+    /**
+     * @var string
+     */
+    protected $type = 'link';
+    
     /**
      * Column(name="url", type="string")
      * 

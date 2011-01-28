@@ -9,8 +9,10 @@ use Epixa\Model\AbstractModel,
     User\Model\User,
     DateTime,
     LogicException,
+    InvalidArgumentException,
     Epixa\Exception\ConfigException,
-    Post\Form\Post as BasePostForm;
+    Post\Form\Post as BasePostForm,
+    Zend_Auth as Auth;
 
 /**
  * @category   Module
@@ -28,6 +30,7 @@ use Epixa\Model\AbstractModel,
  *   "standard" = "Post\Model\Post", 
  *   "link"     = "Post\Model\Post\Link"
  * })
+ * @HasLifecycleCallbacks
  *
  * @property-read integer  $id
  * @property-read string   $type
@@ -217,11 +220,22 @@ class Post extends AbstractModel
     /**
      * Set the date this post was last updated
      * 
-     * @param  DateTime $date
+     * @param  integer|string|DateTime $date
      * @return AbstractPost *Fluent interface*
      */
-    public function setDateUpdated(DateTime $date)
+    public function setDateUpdated($date)
     {
+        if (is_string($date)) {
+            $date = new DateTime($date);
+        } else if (is_int($date)) {
+            $date = new DateTime(sprintf('@%d', $date));
+        } else if (!$date instanceof DateTime) {
+            throw new InvalidArgumentException(sprintf(
+                'Expecting string, integer or DateTime, but got `%s`',
+                is_object($date) ? get_class($date) : gettype($date)
+            ));
+        }
+
         $this->dateUpdated = $date;
         
         return $this;
@@ -245,5 +259,19 @@ class Post extends AbstractModel
     public function getType()
     {
         return $this->_type;
+    }
+    
+    /**
+     * @preUpdate
+     */
+    public function updateLastUpdatedMetaData()
+    {
+        $auth = Auth::getInstance();
+        if (!$auth->hasIdentity()) {
+            return;
+        }
+        
+        $this->setUpdatedBy($auth->getIdentity());
+        $this->setDateUpdated('now');
     }
 }

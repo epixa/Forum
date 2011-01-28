@@ -22,14 +22,14 @@ use Post\Model\Post as BasePost;
 class Link extends BasePost
 {
     /**
-     * @var string
-     */
-    protected $type = 'link';
-    
-    /**
      * Column(name="url", type="string")
      * 
      * @var string
      */
     protected $url;
+    
+    /**
+     * @var string
+     */
+    protected $_type = 'link';
 }

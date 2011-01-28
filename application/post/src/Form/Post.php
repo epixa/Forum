@@ -28,6 +28,11 @@ class Post extends BaseForm
             'required' => true,
             'label' => 'Description'
         ));
+        
+        $this->addElement('hidden', 'type', array(
+            'required' => true,
+            'value' => 'standard'
+        ));
 
         $this->addElement('submit', 'submit', array(
             'ignore' => true,

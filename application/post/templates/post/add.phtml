@@ -9,7 +9,11 @@
         </ul>
     </div>
     
-    <div id="post-form">
-        <?php echo $this->form . PHP_EOL; ?>
+    <div id="post-form-standard" class="pass-form">
+        <?php echo $this->standardForm . PHP_EOL; ?>
+    </div>
+    
+    <div id="post-form-link" class="post-form" style="display: none;">
+        <?php echo $this->linkForm . PHP_EOL; ?>
     </div>
 </div>

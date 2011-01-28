@@ -8,7 +8,9 @@ namespace Post\Model;
 use Epixa\Model\AbstractModel,
     User\Model\User,
     DateTime,
-    LogicException;
+    LogicException,
+    Epixa\Exception\ConfigException,
+    Post\Form\Post as BasePostForm;
 
 /**
  * @category   Module
@@ -39,11 +41,6 @@ use Epixa\Model\AbstractModel,
  */
 class Post extends AbstractModel
 {
-    /**
-     * @var string
-     */
-    protected $type = 'standard';
-    
     /**
      * @Id
      * @Column(name="id", type="integer")
@@ -97,42 +94,23 @@ class Post extends AbstractModel
      */
     protected $updatedBy = null;
     
+    /**
+     * @var string
+     */
+    protected $_type = 'standard';
+    
     
     /**
      * Construct a new post
      * 
-     * Set the post title, date created, and the user that created the post.
-     * 
-     * @param string $title
-     * @param User   $createdBy
+     * @param null|array $data
      */
-    public function __construct($title, User $createdBy)
+    public function __construct($data = null)
     {
-        $this->assertType();
-        
-        $this->setTitle($title);
-        $this->setCreatedBy($createdBy);
-        $this->dateCreated = new DateTime('now');
-    }
-    
-    /**
-     * Invoked when object is unserialized
-     * 
-     * Assert that the object has a type specified
-     */
-    public function __wakeup()
-    {
-        $this->assertType();
-    }
-    
-    /**
-     * Assert that we have a type specified
-     */
-    public function assertType()
-    {
-        if (null === $this->type) {
-            throw new LogicException('No post type was specified');
+        if ($data !== null) {
+            $this->populate($data);
         }
+        $this->dateCreated = new DateTime('now');
     }
     
     /**
@@ -260,13 +238,12 @@ class Post extends AbstractModel
     }
     
     /**
-     * Throws exception so type cannot be set directly
-     *
-     * @param  integer $type
-     * @throws LogicException
+     * Get the type of this post
+     * 
+     * @return string
      */
-    public function setType($type)
+    public function getType()
     {
-        throw new LogicException('Cannot set type directly');
+        return $this->_type;
     }
 }

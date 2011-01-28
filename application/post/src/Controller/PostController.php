@@ -37,9 +37,33 @@ class PostController extends AbstractController
      */
     public function addAction()
     {
-        $form = new PostForm();
+        $request = $this->getRequest();
         
-        $this->view->form = $form;
+        if (!$request->isPost()) {
+            $this->view->standardForm = new PostForm();
+            $this->view->linkForm = new PostForm\Link();
+            return;
+        }
+        
+        $type = $request->getPost('type', null);
+        $this->_helper->assert->isset($type);
+        $this->_helper->assert->isAjax($request);
+        
+        $service = new PostService();
+        $form = $service->getFormByType($type);
+        
+        if (!$form->isValid($request->getPost())) {
+            $this->_helper->ajax->invalid($form);
+        }
+        
+        $post = $service->add($form->getValues());
+        
+        $this->_helper->ajax->success(array(
+            'post' => array(
+                'id'    => $post->id,
+                'title' => $post->title
+            )
+        ));
     }
     
     /**
@@ -49,7 +73,31 @@ class PostController extends AbstractController
     {
         $post = $this->getCurrentPost();
         
-        $this->view->post = $post;
+        $service = new PostService();
+        $form = $service->getFormByType($post->type);
+        
+        $request = $this->getRequest();
+        
+        if (!$request->isPost()) {
+            $this->view->form = $form->populate($post->toArray());
+            $this->view->post = $post;
+            return;
+        }
+        
+        $this->_helper->assert->isAjax($request);
+        
+        if (!$form->isValid($request->getPost())) {
+            $this->_helper->ajax->invalid($form);
+        }
+        
+        $service->edit($post, $form->getValues());
+        
+        $this->_helper->ajax->success(array(
+            'post' => array(
+                'id'    => $post->id,
+                'title' => $post->title
+            )
+        ));
     }
     
     /**
@@ -61,18 +109,15 @@ class PostController extends AbstractController
         
         $request = $this->getRequest();
         
-        $this->_helper->assert->isAjax($request, 'RuntimeException');
+        $this->_helper->assert->isAjax($request);
+        $this->_helper->assert->isPost($request);
         
         $service = new PostService();
         $service->delete($post);
         
-        $this->_helper->viewRenderer->setNoRender(true);
-        echo $this->view->json(array(
-            'status' => 'success',
-            'data' => array(
-                'post' => array(
-                    'title' => $post->title
-                )
+        $this->_helper->ajax->success(array(
+            'post' => array(
+                'title' => $post->title
             )
         ));
     }

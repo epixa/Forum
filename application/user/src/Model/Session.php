@@ -137,7 +137,7 @@ class Session extends AbstractModel implements SessionEntity
         } else if (!$date instanceof DateTime) {
             throw new InvalidArgumentException(sprintf(
                 'Expecting string, integer or DateTime, but got `%s`',
-                is_object($date) ? get_class($date) : gettype($class)
+                is_object($date) ? get_class($date) : gettype($date)
             ));
         }
 

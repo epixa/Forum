@@ -66,5 +66,20 @@ create table post (
     constraint post_updated_by foreign key(updated_by_user_id) references `user`(id) on delete restrict
 ) engine=innodb;
 
+drop table if exists post_comment;
+create table post_comment (
+    id int not null auto_increment,
+    content text not null,
+    date_created datetime not null,
+    created_by_user_id int not null,
+    date_updated datetime,
+    updated_by_user_id int,
+    post_id int not null,
+    primary key(id),
+    constraint comment_created_by foreign key(created_by_user_id) references `user`(id) on delete restrict,
+    constraint comment_updated_by foreign key(updated_by_user_id) references `user`(id) on delete restrict,
+    constraint comment_has_post foreign key(post_id) references post(id) on delete cascade
+) engine=innodb;
+
 -- Set the foreign key checks back to the original value
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

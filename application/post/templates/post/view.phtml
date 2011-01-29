@@ -3,6 +3,14 @@
 $post = $this->post;
 ?>
 
-<div id="post-<?php echo $post->id; ?>">
+<div class="post" id="post-<?php echo $post->id; ?>">
     <h1><?php echo $this->postTitle($post); ?></h1>
+    
+    <div id="comments">
+        <?php foreach ($post->comments as $comment): ?>
+        <div class="comment" id="comment-<?php echo $comment->id; ?>">
+            <?php echo $comment->content; ?>
+        </div>
+        <?php endforeach; ?>
+    </div>
 </div>

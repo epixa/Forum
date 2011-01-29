@@ -6,3 +6,6 @@ insert into user_auth (user_id, login_id, pass_hash) values
 
 insert into post (discriminator, title, date_created, created_by_user_id) values
     ('standard', 'This is my first post', now(), 1);
+
+insert into post_comment (content, date_created, created_by_user_id, post_id) values
+    ('This is the first comment', now(), 1, 1);

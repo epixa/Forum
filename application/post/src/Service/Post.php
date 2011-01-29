@@ -122,10 +122,13 @@ class Post extends AbstractDoctrineService
      */
     public function edit(PostModel $post, array $data)
     {
+        $em = $this->getEntityManager();
+        if (!$em->contains($post)) {
+            throw new InvalidArgumentException('Post is not managed by the entity manager');
+        }
+        
         $post->populate($data);
         
-        $em = $this->getEntityManager();
-        $em->persist($post);
         $em->flush();
     }
     

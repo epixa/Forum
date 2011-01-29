@@ -6,13 +6,10 @@
 namespace Post\Model;
 
 use Epixa\Model\AbstractModel,
-    Doctrine\Common\Collections\ArrayCollection,
     User\Model\User,
     DateTime,
     LogicException,
     InvalidArgumentException,
-    Epixa\Exception\ConfigException,
-    Post\Form\Post as BasePostForm,
     Zend_Auth as Auth;
 
 /**
@@ -23,28 +20,20 @@ use Epixa\Model\AbstractModel,
  * @license    http://github.com/epixa/Epixa/blob/master/LICENSE New BSD
  * @author     Court Ewing (court@epixa.com)
  *
- * @Entity(repositoryClass="Post\Repository\Post")
- * @Table(name="post")
- * @InheritanceType("SINGLE_TABLE")
- * @DiscriminatorColumn(name="discriminator", type="string")
- * @DiscriminatorMap({
- *   "standard" = "Post\Model\Post", 
- *   "link"     = "Post\Model\Post\Link"
- * })
+ * @Entity(repositoryClass="Post\Repository\Comment")
+ * @Table(name="post_comment")
  * @HasLifecycleCallbacks
  *
  * @property-read integer  $id
- * @property-read string   $type
  * @property-read DateTime $dateCreated
  * 
- * @property string          $title
- * @property string          $description
- * @property User            $createdBy
- * @property DateTime        $dateUpdated
- * @property User            $updatedBy
- * @property ArrayCollection $comments
+ * @property string   $content
+ * @property User     $createdBy
+ * @property DateTime $dateUpdated
+ * @property User     $updatedBy
+ * @property Post     $post
  */
-class Post extends AbstractModel
+class Comment extends AbstractModel
 {
     /**
      * @Id
@@ -56,18 +45,11 @@ class Post extends AbstractModel
     protected $id;
     
     /**
-     * @Column(name="title", type="string")
+     * @Column(name="content", type="string")
      * 
      * @var string
      */
-    protected $title;
-    
-    /**
-     * @Column(name="description", type="string", nullable="true")
-     * 
-     * @var null|string
-     */
-    protected $description = null;
+    protected $content;
     
     /**
      * @Column(name="date_created", type="datetime")
@@ -100,18 +82,14 @@ class Post extends AbstractModel
     protected $updatedBy = null;
     
     /**
-     * @OneToMany(targetEntity="Post\Model\Comment", mappedBy="post")
+     * @ManyToOne(targetEntity="Post\Model\Post", inversedBy="comments")
+     * @JoinColumn(name="post_id", referencedColumnName="id")
      */
-    protected $comments;
-    
-    /**
-     * @var string
-     */
-    protected $_type = 'standard';
+    protected $post;
     
     
     /**
-     * Construct a new post
+     * Construct a new comment
      * 
      * @param null|array $data
      */
@@ -121,7 +99,6 @@ class Post extends AbstractModel
             $this->populate($data);
         }
         $this->dateCreated = new DateTime('now');
-        $this->comments = new ArrayCollection();
     }
     
     /**
@@ -136,33 +113,33 @@ class Post extends AbstractModel
     }
     
     /**
-     * Set the title of this post
+     * Set the comment's content
      * 
-     * @param  string $title
-     * @return AbstractPost *Fluent interface*
+     * @param  string $content
+     * @return AbstractComment *Fluent interface*
      */
-    public function setTitle($title)
+    public function setContent($content)
     {
-        $this->title = (string)$title;
+        $this->content = (string)$content;
         
         return $this;
     }
     
     /**
-     * Get the title of this post
+     * Get the comment's content
      * 
      * @return string
      */
-    public function getTitle()
+    public function getContent()
     {
-        return $this->title;
+        return $this->content;
     }
     
     /**
-     * Set the user that created this post
+     * Set the user that created this comment
      *
      * @param  User $user
-     * @return AbstractPost *Fluent interface*
+     * @return AbstractComment *Fluent interface*
      */
     public function setCreatedBy(User $user)
     {
@@ -172,7 +149,7 @@ class Post extends AbstractModel
     }
 
     /**
-     * Get the user that created this post
+     * Get the user that created this comment
      *
      * @return User
      */
@@ -193,7 +170,7 @@ class Post extends AbstractModel
     }
     
     /**
-     * Get the date this post was created
+     * Get the date this comment was created
      *
      * @return DateTime
      */
@@ -203,10 +180,10 @@ class Post extends AbstractModel
     }
     
     /**
-     * Set the user that last updated this post
+     * Set the user that last updated this comment
      *
      * @param  User $user
-     * @return AbstractPost *Fluent interface*
+     * @return AbstractComment *Fluent interface*
      */
     public function setUpdatedBy(User $user)
     {
@@ -216,7 +193,7 @@ class Post extends AbstractModel
     }
 
     /**
-     * Get the user that created this post
+     * Get the user that created this comment
      *
      * @return User
      */
@@ -226,10 +203,10 @@ class Post extends AbstractModel
     }
     
     /**
-     * Set the date this post was last updated
+     * Set the date this comment was last updated
      * 
      * @param  integer|string|DateTime $date
-     * @return AbstractPost *Fluent interface*
+     * @return AbstractComment *Fluent interface*
      */
     public function setDateUpdated($date)
     {
@@ -250,23 +227,13 @@ class Post extends AbstractModel
     }
     
     /**
-     * Get the date this post was last updated
+     * Get the date this comment was last updated
      *
      * @return null|DateTime
      */
     public function getDateUpdated()
     {
         return $this->dateUpdated;
-    }
-    
-    /**
-     * Get the type of this post
-     * 
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->_type;
     }
     
     /**
